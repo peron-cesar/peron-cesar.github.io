@@ -1,2 +1,2 @@
-# drontzos.studio.github.io
+# dronyzos.studio.github.io
 le superbe site web de dronyzos studio
