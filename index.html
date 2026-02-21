@@ -1,0 +1,998 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>DRONYZOS STUDIO</title>
+  <meta name="description" content="Studio créatif premium — Drone, films cinématiques, contenu social pour marques, hôtels, immobilier, sport." />
+
+  <style>
+    :root{
+      /* Bleu DRONYZOS */
+      --blue:#00AEEF;
+      --blue2:#0096d6;
+
+      --bg:#070A0E;
+      --bg2:#05060A;
+      --card:rgba(255,255,255,.045);
+      --line:rgba(255,255,255,.10);
+
+      --text:#fff;
+      --muted:rgba(255,255,255,.72);
+
+      --r:20px;
+      --shadow:0 18px 55px rgba(0,0,0,.55);
+      --glow:0 0 28px rgba(0,174,239,.15);
+
+      /* ✅ Aération “Wegic-like” */
+      --sectionY: 92px;
+      --gap: 18px;
+      --gapLg: 22px;
+      --padCard: 22px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      color:var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background:
+        radial-gradient(1200px 640px at 16% 6%, rgba(0,174,239,.18), transparent 62%),
+        radial-gradient(900px 520px at 88% 10%, rgba(0,150,214,.10), transparent 60%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
+      overflow-x:hidden;
+    }
+
+    /* Subtle grain (détail premium) */
+    .grain{
+      pointer-events:none;
+      position:fixed; inset:0;
+      opacity:.10;
+      mix-blend-mode:overlay;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.9'/%3E%3C/svg%3E");
+      background-size:160px 160px;
+      z-index:0;
+    }
+
+    .container{width:min(1140px, 92%); margin:0 auto}
+    .muted{color:var(--muted)}
+    a{color:inherit}
+    .soft{color:rgba(255,255,255,.82)}
+
+    /* ===================== WELCOME OVERLAY ===================== */
+    .welcome{
+      position:fixed;
+      inset:0;
+      z-index:9999;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background: linear-gradient(180deg, rgba(7,10,14,.92), rgba(0,0,0,.98));
+      backdrop-filter: blur(10px);
+      transition: opacity .45s ease, transform .45s ease;
+    }
+    .welcome.hide{
+      opacity:0;
+      transform: translateY(-6px);
+      pointer-events:none;
+    }
+    .welcomeCard{
+      width:min(760px, 92%);
+      border-radius: 26px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      box-shadow: 0 26px 90px rgba(0,0,0,.65), 0 0 38px rgba(0,174,239,.16);
+      padding: 40px 28px;
+      text-align:center;
+      position:relative;
+      overflow:hidden;
+    }
+    .welcomeCard::before{
+      content:"";
+      position:absolute; inset:-2px;
+      background: linear-gradient(120deg, rgba(0,174,239,.20), transparent 42%, rgba(0,150,214,.16));
+      filter: blur(18px);
+      opacity:.75;
+      pointer-events:none;
+    }
+    .welcomeLogo{
+      margin: 0 auto 16px;
+      height:60px;
+      width:auto;
+      display:block;
+      filter: drop-shadow(0 10px 30px rgba(0,0,0,.45));
+      position:relative;
+      z-index:1;
+    }
+    .welcomeTitle{
+      position:relative;
+      z-index:1;
+      margin:0 0 10px;
+      font-size: 34px;
+      letter-spacing:-.8px;
+      text-shadow: 0 0 16px rgba(0,174,239,.55), 0 0 44px rgba(0,150,214,.20);
+    }
+    .welcomeText{
+      position:relative;
+      z-index:1;
+      margin:0 auto 22px;
+      color: rgba(255,255,255,.78);
+      font-weight: 650;
+      line-height:1.65;
+      max-width: 64ch;
+    }
+    .welcomeBtn{
+      position:relative;
+      z-index:1;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:14px 20px;
+      border-radius: 16px;
+      border:1px solid rgba(0,174,239,.40);
+      background: linear-gradient(90deg, rgba(0,174,239,.34), rgba(0,150,214,.16));
+      box-shadow: 0 0 28px rgba(0,174,239,.18);
+      color:#fff;
+      font-weight: 950;
+      cursor:pointer;
+      transition: transform .18s ease, filter .18s ease;
+      text-decoration:none;
+      user-select:none;
+    }
+    .welcomeBtn:hover{transform: translateY(-2px); filter: brightness(1.06);}
+    .welcomeHint{
+      position:relative;
+      z-index:1;
+      margin-top: 12px;
+      font-size: 12px;
+      color: rgba(255,255,255,.55);
+      font-weight: 650;
+    }
+
+    /* ===== Header ===== */
+    header{
+      position:sticky; top:0; z-index:50;
+      backdrop-filter: blur(12px);
+      background: rgba(0,0,0,.55);
+      border-bottom:1px solid var(--line);
+    }
+    .nav{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:14px 0;
+      gap:18px;
+    }
+    .brand{display:flex; align-items:center; gap:12px; text-decoration:none;}
+
+    /* Cadre logo plus long + fond clair */
+    .logoFrame{
+      display:flex; align-items:center; justify-content:center;
+      height:52px;
+      min-width:240px;
+      padding:10px 18px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.92);
+      box-shadow: 0 12px 35px rgba(0,0,0,.35), 0 0 18px rgba(0,174,239,.10);
+      overflow:hidden;
+    }
+    .logoFrame img{height:34px; width:auto; display:block;}
+
+    .menu{display:flex; align-items:center; gap:20px; flex-wrap:wrap}
+    .navlink{
+      position:relative;
+      padding:10px 2px;
+      text-decoration:none;
+      font-weight:900;
+      font-size:14px;
+      letter-spacing:.2px;
+      color: rgba(255,255,255,.74);
+    }
+    .navlink:hover{color:#fff}
+    .navlink::after{
+      content:"";
+      position:absolute;
+      left:0;
+      bottom:4px;
+      height:2px;
+      width:0%;
+      border-radius:999px;
+      background: linear-gradient(90deg, var(--blue), var(--blue2));
+      box-shadow: 0 0 18px rgba(0,174,239,.45);
+      transition: width .25s ease;
+    }
+    .navlink:hover::after{width:100%}
+
+    .cta{
+      padding:12px 16px;
+      border-radius:999px;
+      border:1px solid rgba(0,174,239,.38);
+      background: linear-gradient(90deg, rgba(0,174,239,.30), rgba(0,150,214,.14));
+      text-decoration:none;
+      font-weight:950;
+      color:#fff;
+      box-shadow: 0 10px 30px rgba(0,0,0,.35), var(--glow);
+      transition: transform .18s ease, filter .18s ease;
+      white-space:nowrap;
+    }
+    .cta:hover{transform: translateY(-2px); filter: brightness(1.06);}
+
+    /* ===== Hero video ===== */
+    .hero{
+      position:relative;
+      overflow:hidden;
+      padding:110px 0 84px; /* ✅ plus aéré */
+      z-index:1;
+    }
+    .hero video{
+      position:absolute; inset:0;
+      width:100%; height:100%;
+      object-fit:cover;
+      opacity:.22;
+      transform: scale(1.05);
+      filter: contrast(1.08) saturate(1.04);
+    }
+    .heroOverlay{
+      position:absolute; inset:0;
+      background:
+        radial-gradient(900px 520px at 18% 10%, rgba(0,174,239,.22), transparent 60%),
+        radial-gradient(700px 420px at 85% 15%, rgba(0,150,214,.12), transparent 58%),
+        linear-gradient(180deg, rgba(7,10,14,.55), rgba(7,10,14,.94));
+    }
+    .heroGrid{
+      position:relative;
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: var(--gapLg);
+      align-items:stretch;
+      z-index:2;
+    }
+    .h1{
+      margin:0 0 18px;
+      font-size: 54px;
+      line-height:1.02;
+      letter-spacing:-1px;
+    }
+    .glowText{
+      text-shadow: 0 0 14px rgba(0,174,239,.55), 0 0 44px rgba(0,150,214,.22);
+    }
+    .lead{
+      margin:0 0 20px;
+      color: rgba(255,255,255,.78);
+      font-weight: 650;
+      max-width: 64ch;
+      line-height:1.65;
+      font-size: 16px;
+    }
+
+    .actions{display:flex; gap:12px; flex-wrap:wrap; margin-top: 12px}
+
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      padding:14px 18px;
+      border-radius: 16px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.06);
+      color:#fff;
+      text-decoration:none;
+      font-weight: 950;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease, filter .18s ease;
+    }
+    .btn:hover{transform: translateY(-2px)}
+    .btn.primary{
+      border-color: rgba(0,174,239,.44);
+      background: linear-gradient(90deg, rgba(0,174,239,.34), rgba(0,150,214,.16));
+      box-shadow: var(--glow);
+    }
+
+    .chips{display:flex; gap:10px; flex-wrap:wrap; margin-top: 22px}
+    .chip{
+      font-size:12px;
+      font-weight: 900;
+      color: rgba(255,255,255,.88);
+      border:1px solid rgba(0,174,239,.24);
+      background: rgba(0,0,0,.36);
+      padding:8px 12px;
+      border-radius:999px;
+      box-shadow: 0 0 18px rgba(0,174,239,.07);
+    }
+
+    /* ===== Sections ===== */
+    section{padding: var(--sectionY) 0; position:relative; z-index:1}
+    h2{
+      margin:0 0 14px;
+      font-size:32px;
+      letter-spacing:-.4px;
+    }
+    .sub{
+      margin: 0 0 28px;
+      color: rgba(255,255,255,.72);
+      max-width: 82ch;
+      line-height:1.7;
+      font-weight: 620;
+    }
+
+    /* Cards */
+    .grid{display:grid; gap: var(--gap)}
+    .box, .card, .service, .work, details{
+      border:1px solid var(--line);
+      background: var(--card);
+      border-radius: var(--r);
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    }
+    .box, .service{padding: var(--padCard)}
+    .box:hover, .service:hover, .work:hover, .card:hover, details:hover{
+      transform: translateY(-4px);
+      border-color: rgba(0,174,239,.34);
+      box-shadow: var(--shadow), var(--glow);
+    }
+
+    /* Services */
+    .services{grid-template-columns: repeat(3, 1fr)}
+    .service h3{margin:0 0 10px; font-size:16px}
+    .service p{margin:0; color: rgba(255,255,255,.72); font-weight: 620; line-height:1.6}
+
+    /* Portfolio */
+    .portfolio{grid-template-columns: repeat(4, 1fr)}
+    .work{
+      overflow:hidden;
+      cursor:pointer; /* ✅ cliquable */
+    }
+    .thumb{
+      aspect-ratio:16/10;
+      background:
+        linear-gradient(135deg, rgba(0,174,239,.16), rgba(0,0,0,.22)),
+        radial-gradient(320px 200px at 30% 20%, rgba(255,255,255,.08), transparent 60%);
+      position:relative;
+    }
+    .tag{
+      position:absolute; top:12px; left:12px;
+      font-size:12px; font-weight:950;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid rgba(0,174,239,.26);
+      background: rgba(0,0,0,.45);
+      box-shadow: var(--glow);
+    }
+    .caption{
+      padding: 16px 16px 18px;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .caption strong{font-weight: 950}
+    .caption .muted{font-size: 13px}
+
+    .hintClick{
+      margin-top: 10px;
+      color: rgba(255,255,255,.55);
+      font-weight: 650;
+      font-size: 12px;
+    }
+
+    /* Split */
+    .split{display:grid; grid-template-columns: 1fr 1fr; gap: var(--gapLg)}
+
+    /* Timeline */
+    .steps{display:grid; gap: 14px}
+    .step{
+      display:flex; gap:14px; align-items:flex-start;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.035);
+      border-radius: 18px;
+      padding: 18px;
+    }
+    .dot{
+      width:12px; height:12px; border-radius:99px;
+      margin-top: 7px;
+      background: linear-gradient(180deg, var(--blue), var(--blue2));
+      box-shadow: 0 0 18px rgba(0,174,239,.45);
+      flex: 0 0 auto;
+    }
+    .step h4{margin:0 0 6px; font-size:14px}
+    .step p{margin:0; color: rgba(255,255,255,.72); font-weight: 620; line-height:1.6}
+
+    /* FAQ */
+    details{padding:16px 18px; background: rgba(255,255,255,.035)}
+    details summary{cursor:pointer; font-weight:950; color: rgba(255,255,255,.92)}
+    details p{margin:12px 0 0; color: rgba(255,255,255,.72); font-weight: 620; line-height:1.7}
+
+    /* Footer */
+    footer{
+      border-top:1px solid var(--line);
+      background: rgba(0,0,0,.35);
+      padding:30px 0;
+    }
+    .foot{display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap}
+
+    /* ===== Scroll reveal ===== */
+    .reveal{
+      opacity:0;
+      transform: translateY(16px);
+      transition: opacity .75s ease, transform .75s ease;
+    }
+    .reveal.is-visible{
+      opacity:1;
+      transform: translateY(0);
+    }
+
+    /* ===================== PORTFOLIO MODAL ===================== */
+    .modal{
+      position:fixed; inset:0;
+      z-index:9000;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      background: rgba(0,0,0,.72);
+      backdrop-filter: blur(10px);
+      padding: 22px;
+    }
+    .modal.show{display:flex}
+    .modalCard{
+      width:min(1040px, 96%);
+      max-height: 86vh;
+      overflow:auto;
+      border-radius: 22px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(10,12,16,.88);
+      box-shadow: 0 26px 90px rgba(0,0,0,.65), 0 0 38px rgba(0,174,239,.12);
+      position:relative;
+    }
+    .modalHead{
+      position:sticky;
+      top:0;
+      background: rgba(10,12,16,.92);
+      backdrop-filter: blur(12px);
+      border-bottom:1px solid rgba(255,255,255,.10);
+      padding: 18px 18px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 14px;
+    }
+    .modalTitle{
+      margin:0;
+      font-size: 18px;
+      font-weight: 950;
+      letter-spacing: -.2px;
+    }
+    .closeBtn{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color:#fff;
+      border-radius: 14px;
+      padding:10px 12px;
+      cursor:pointer;
+      font-weight: 950;
+      transition: transform .18s ease;
+    }
+    .closeBtn:hover{transform: translateY(-1px)}
+    .modalBody{padding: 18px}
+    .videosGrid{
+      display:grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+    .vCard{
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      border-radius: 18px;
+      overflow:hidden;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    }
+    .vCard:hover{
+      transform: translateY(-3px);
+      border-color: rgba(0,174,239,.34);
+      box-shadow: var(--shadow), var(--glow);
+    }
+    .vMedia{
+      aspect-ratio: 16/9;
+      background: linear-gradient(135deg, rgba(0,174,239,.10), rgba(0,0,0,.35));
+    }
+    .vMedia video{
+      width:100%;
+      height:100%;
+      display:block;
+      object-fit:cover;
+    }
+
+    /* ✅ YouTube embed wrapper */
+    .ytWrap{
+      position:relative;
+      width:100%;
+      height:100%;
+    }
+    .ytWrap iframe{
+      position:absolute; inset:0;
+      width:100%;
+      height:100%;
+      border:0;
+      display:block;
+    }
+
+    .vMeta{
+      padding: 14px 14px 16px;
+      display:flex;
+      flex-direction:column;
+      gap: 6px;
+    }
+    .vMeta strong{font-weight: 950}
+    .vMeta .muted{font-size: 13px; line-height:1.55}
+    .empty{
+      border:1px dashed rgba(255,255,255,.14);
+      background: rgba(255,255,255,.03);
+      border-radius: 18px;
+      padding: 18px;
+      color: rgba(255,255,255,.72);
+      font-weight: 650;
+      line-height: 1.65;
+    }
+    /* ================================================================ */
+
+    /* Responsive */
+    @media (max-width: 980px){
+      :root{ --sectionY: 78px; }
+      .heroGrid{grid-template-columns:1fr}
+      .services{grid-template-columns: repeat(2, 1fr)}
+      .portfolio{grid-template-columns: repeat(2, 1fr)}
+      .split{grid-template-columns:1fr}
+      .h1{font-size:44px}
+      .logoFrame{min-width: 200px;}
+      .videosGrid{grid-template-columns: 1fr;}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="grain"></div>
+
+  <!-- Welcome overlay -->
+  <div class="welcome" id="welcome">
+    <div class="welcomeCard">
+      <img class="welcomeLogo" src="logo.png" alt="Logo DRONYZOS STUDIO">
+      <h1 class="welcomeTitle">Bienvenue chez DRONYZOS STUDIO</h1>
+      <p class="welcomeText">
+        Studio créatif premium : drone, films cinématiques et contenu social.
+        Clique pour entrer sur le site.
+      </p>
+      <button class="welcomeBtn" id="enterBtn">Entrer sur le site</button>
+      <div class="welcomeHint">Astuce : touche <strong>Entrée</strong> pour entrer • clic n’importe où fonctionne aussi</div>
+    </div>
+  </div>
+
+  <!-- Portfolio modal -->
+  <div class="modal" id="portfolioModal" aria-hidden="true">
+    <div class="modalCard" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modalHead">
+        <h3 class="modalTitle" id="modalTitle">Portfolio</h3>
+        <button class="closeBtn" id="closeModal">Fermer ✕</button>
+      </div>
+      <div class="modalBody">
+        <div id="modalContent"></div>
+      </div>
+    </div>
+  </div>
+
+  <header>
+    <div class="container nav">
+      <a class="brand" href="#top" aria-label="DRONYZOS STUDIO">
+        <div class="logoFrame">
+          <img src="logo.png" alt="Logo DRONYZOS STUDIO">
+        </div>
+      </a>
+
+      <nav class="menu" aria-label="Navigation">
+        <a class="navlink" href="#services">Services</a>
+        <a class="navlink" href="#portfolio">Portfolio</a>
+        <a class="navlink" href="#process">Process</a>
+        <a class="navlink" href="#faq">FAQ</a>
+        <a class="cta" href="https://meetings-eu1.hubspot.com/cesar-peron" target="_blank" rel="noopener">Prendre rendez-vous</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <video autoplay muted loop playsinline>
+        <source src="hero.mp4" type="video/mp4">
+      </video>
+      <div class="heroOverlay"></div>
+
+      <div class="container">
+        <div class="heroGrid">
+          <div>
+            <h1 class="h1">
+              Drone & films cinématiques<br>
+              <span class="glowText">pour marques modernes</span>
+            </h1>
+            <p class="lead">
+              DRONYZOS STUDIO crée des vidéos premium pour hôtels/Airbnb, immobilier, entrepreneurs et sport.
+              Un rendu “agence” : propre, sombre, précis, et orienté conversion.
+            </p>
+
+            <div class="actions">
+              <a class="btn primary" href="https://meetings-eu1.hubspot.com/cesar-peron" target="_blank" rel="noopener">Prendre rendez-vous</a>
+              <a class="btn" href="#portfolio">Voir le portfolio</a>
+            </div>
+
+            <div class="chips">
+              <span class="chip">Plans aériens</span>
+              <span class="chip">Immobilier</span>
+              <span class="chip">Hôtels / Airbnb</span>
+              <span class="chip">Sport</span>
+              <span class="chip">Reels / Shorts</span>
+            </div>
+          </div>
+
+          <div class="box">
+            <p class="muted" style="margin:0 0 10px;">Approche</p>
+            <h3 style="margin:0 0 12px;">Direction claire, rendu premium</h3>
+            <p class="muted" style="margin:0 0 16px; line-height:1.7;">
+              On échange 15 minutes, tu me dis l’objectif, je te propose une structure (plans / style / durée),
+              et je te donne la meilleure stratégie pour ton contenu.
+            </p>
+            <a class="btn primary" href="https://meetings-eu1.hubspot.com/cesar-peron" target="_blank" rel="noopener">Prendre rendez-vous</a>
+            <p class="muted" style="margin:14px 0 0; font-size:12px;">
+              Astuce : vidéo sombre courte (6–12s) → rendu “cinéma” direct.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="services">
+      <div class="container">
+        <h2>Services</h2>
+        <p class="sub">Des prestations pensées pour la valeur perçue et la conversion.</p>
+
+        <div class="grid services">
+          <div class="service">
+            <h3>Vidéographie par drone</h3>
+            <p>Plans aériens cinématiques, mouvement fluide, storytelling premium.</p>
+          </div>
+          <div class="service">
+            <h3>Immobilier premium</h3>
+            <p>Visites haut de gamme : vendre/louer plus vite avec un rendu “luxe”.</p>
+          </div>
+          <div class="service">
+            <h3>Hôtels & Airbnb</h3>
+            <p>Ambiance + émotion : showreel optimisé pour booking + réseaux.</p>
+          </div>
+          <div class="service">
+            <h3>Aftermovies</h3>
+            <p>Récaps dynamiques : montage rythmé, musique, versions courtes.</p>
+          </div>
+          <div class="service">
+            <h3>Réseaux sociaux</h3>
+            <p>Reels/Shorts : hooks, sous-titres, déclinaisons multi plateformes.</p>
+          </div>
+          <div class="service">
+            <h3>Photographie</h3>
+            <p>Photos cohérentes avec ton branding : web, réseaux, affiches.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="portfolio">
+      <div class="container">
+        <h2>Portfolio</h2>
+        <p class="sub">
+          Clique sur une catégorie → tu auras une fenêtre avec toutes les vidéos de cette catégorie.
+          Tu peux en ajouter au fur et à mesure.
+        </p>
+
+        <div class="grid portfolio">
+          <div class="work" data-cat="drone">
+            <div class="thumb"><span class="tag">Drone</span></div>
+            <div class="caption">
+              <strong>Drone</strong>
+              <span class="muted">Voir toutes les vidéos →</span>
+            </div>
+          </div>
+
+          <div class="work" data-cat="immobilier">
+            <div class="thumb"><span class="tag">Immobilier</span></div>
+            <div class="caption">
+              <strong>Immobilier</strong>
+              <span class="muted">Voir toutes les vidéos →</span>
+            </div>
+          </div>
+
+          <div class="work" data-cat="hotel">
+            <div class="thumb"><span class="tag">Hôtel / Airbnb</span></div>
+            <div class="caption">
+              <strong>Hôtel / Airbnb</strong>
+              <span class="muted">Voir toutes les vidéos →</span>
+            </div>
+          </div>
+
+          <div class="work" data-cat="sport">
+            <div class="thumb"><span class="tag">Sport</span></div>
+            <div class="caption">
+              <strong>Sport</strong>
+              <span class="muted">Voir toutes les vidéos →</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hintClick">💡 Astuce : tu peux mettre tes fichiers vidéo dans le dossier (ex: <span class="soft">sport-01.mp4</span>) et les ajouter dans la liste en bas du code.</div>
+      </div>
+    </section>
+
+    <section id="process">
+      <div class="container split">
+        <div>
+          <h2>Process</h2>
+          <p class="sub">Un déroulé clair pour livrer vite et propre, avec un rendu cinéma.</p>
+
+          <div class="steps">
+            <div class="step">
+              <span class="dot"></span>
+              <div>
+                <h4>1) Brief</h4>
+                <p>Objectif, style, durée, plateformes, délais : on valide une direction.</p>
+              </div>
+            </div>
+            <div class="step">
+              <span class="dot"></span>
+              <div>
+                <h4>2) Tournage</h4>
+                <p>Plans drone + caméra, repérage, sécurité, météo.</p>
+              </div>
+            </div>
+            <div class="step">
+              <span class="dot"></span>
+              <div>
+                <h4>3) Montage & étalonnage</h4>
+                <p>Rythme, sound design, grading sombre premium, exports multi formats.</p>
+              </div>
+            </div>
+            <div class="step">
+              <span class="dot"></span>
+              <div>
+                <h4>4) Livraison</h4>
+                <p>Fichiers optimisés + versions verticales + miniatures si besoin.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="box">
+          <h3 style="margin:0 0 12px;">Contact</h3>
+          <p class="muted" style="margin:0 0 10px;">Email : <strong style="color:#fff;">studiodronyzos@gmail.com</strong></p>
+          <p class="muted" style="margin:0 0 10px;">Instagram : <strong style="color:#fff;">@dronyzos_studio</strong></p>
+          <p class="muted" style="margin:0 0 10px;">X : <strong style="color:#fff;">@dronyzos_studio</strong></p>
+          <p class="muted" style="margin:0 0 16px;">Facebook : <strong style="color:#fff;">DRONYZOS STUDIO</strong></p>
+
+          <a class="btn primary" href="https://meetings-eu1.hubspot.com/cesar-peron" target="_blank" rel="noopener">Prendre rendez-vous</a>
+          <p class="muted" style="margin:14px 0 0; font-size:12px;">CTA principal : prise de rendez-vous HubSpot.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq">
+      <div class="container">
+        <h2>FAQ</h2>
+        <p class="sub">Rassurer + faire pro : les questions fréquentes.</p>
+
+        <div class="grid" style="grid-template-columns:1fr; gap:14px;">
+          <details>
+            <summary>Combien de temps pour livrer ?</summary>
+            <p>Généralement 3 à 7 jours selon le projet. Urgence possible.</p>
+          </details>
+          <details>
+            <summary>Et si la météo est mauvaise ?</summary>
+            <p>On reporte le tournage drone. La sécurité et la qualité avant tout.</p>
+          </details>
+          <details>
+            <summary>Tu fais des versions Reels / Shorts ?</summary>
+            <p>Oui : déclinaisons verticales et exports optimisés pour les plateformes.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="container foot">
+        <span class="muted">© 2026 DRONYZOS STUDIO — Dijon</span>
+        <a class="muted" href="#top" style="text-decoration:none;">Retour en haut ↑</a>
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    /* ================== PORTFOLIO DATA (AJOUTE TES VIDEOS ICI) ==================
+       - type: "mp4"     => met le fichier dans le dossier (ex: "immobilier-01.mp4")
+       - type: "link"    => lien vers une page (ouvre nouvel onglet)
+       - type: "youtube" => ID YouTube (ex: Vz7Oxn0WSJY) => s'affiche dans la popup
+    */
+    const PORTFOLIO = {
+      drone: [
+        // { title:"Survol cinématique", desc:"Plan drone — coucher de soleil", type:"mp4", src:"drone-01.mp4" }
+      ],
+      immobilier: [
+        // { title:"Appartement premium", desc:"Visite courte 30s", type:"mp4", src:"immobilier-01.mp4" }
+      ],
+      hotel: [
+        { title:"Hôtel / Airbnb", desc:"Vidéo (YouTube)", type:"youtube", src:"Vz7Oxn0WSJY" }
+      ],
+      sport: [
+        // { title:"Tennis highlight", desc:"Montage dynamique", type:"mp4", src:"sport-01.mp4" }
+      ]
+    };
+
+    const CAT_LABEL = {
+      drone: "Drone",
+      immobilier: "Immobilier",
+      hotel: "Hôtel / Airbnb",
+      sport: "Sport"
+    };
+
+    // Helpers
+    const escapeHTML = (s="") => String(s).replace(/[&<>"']/g, m => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+    }[m]));
+    const ytEmbed = (id="") => `https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?rel=0&modestbranding=1`;
+
+    /* ================== Welcome overlay ================== */
+    const welcome = document.getElementById('welcome');
+    const enterBtn = document.getElementById('enterBtn');
+
+    function enterSite(){
+      if(!welcome) return;
+      welcome.classList.add('hide');
+      setTimeout(() => {
+        const top = document.getElementById('top');
+        if(top) top.scrollIntoView({behavior:'smooth'});
+      }, 120);
+    }
+
+    if(enterBtn){
+      enterBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        enterSite();
+      });
+    }
+    if(welcome){
+      welcome.addEventListener('click', () => enterSite());
+    }
+    document.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' && welcome && !welcome.classList.contains('hide')){
+        enterSite();
+      }
+    });
+
+    /* ================== Scroll reveal ================== */
+    const els = document.querySelectorAll('section, .service, .work, .box, details');
+    els.forEach(el => el.classList.add('reveal'));
+
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if(e.isIntersecting){
+          e.target.classList.add('is-visible');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    els.forEach(el => io.observe(el));
+
+    /* ================== Portfolio modal ================== */
+    const modal = document.getElementById('portfolioModal');
+    const closeModalBtn = document.getElementById('closeModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalContent = document.getElementById('modalContent');
+
+    function openModal(catKey){
+      const label = CAT_LABEL[catKey] || "Portfolio";
+      modalTitle.textContent = `Portfolio — ${label}`;
+
+      const items = PORTFOLIO[catKey] || [];
+
+      if(items.length === 0){
+        modalContent.innerHTML = `
+          <div class="empty">
+            Pour l’instant, tu n’as pas encore de vidéos dans la catégorie <strong>${escapeHTML(label)}</strong>.<br><br>
+            ✅ Quand tu auras une vidéo : mets le fichier <strong>.mp4</strong> dans le dossier du site,
+            puis ajoute une ligne ici dans le code (PORTFOLIO → ${escapeHTML(catKey)}).<br><br>
+            Exemple : <span class="soft">{ title:"Mon clip", desc:"30s", type:"mp4", src:"${escapeHTML(catKey)}-01.mp4" }</span>
+          </div>
+        `;
+      } else {
+        const cards = items.map(v => {
+          const title = escapeHTML(v.title || "Vidéo");
+          const desc  = escapeHTML(v.desc || "");
+
+          // ✅ YouTube (lisible dans la popup)
+          if(v.type === "youtube"){
+            return `
+              <div class="vCard">
+                <div class="vMedia">
+                  <div class="ytWrap">
+                    <iframe
+                      src="${ytEmbed(v.src)}"
+                      title="${title}"
+                      loading="lazy"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowfullscreen>
+                    </iframe>
+                  </div>
+                </div>
+                <div class="vMeta">
+                  <strong>${title}</strong>
+                  <div class="muted">${desc}</div>
+                  <a class="btn" href="https://youtu.be/${encodeURIComponent(v.src)}" target="_blank" rel="noopener">Ouvrir sur YouTube</a>
+                </div>
+              </div>
+            `;
+          }
+
+          // Link (ouvre nouvel onglet)
+          if(v.type === "link"){
+            return `
+              <div class="vCard">
+                <div class="vMedia"></div>
+                <div class="vMeta">
+                  <strong>${title}</strong>
+                  <div class="muted">${desc}</div>
+                  <a class="btn primary" href="${escapeHTML(v.src)}" target="_blank" rel="noopener">Ouvrir la vidéo</a>
+                </div>
+              </div>
+            `;
+          }
+
+          // default mp4
+          return `
+            <div class="vCard">
+              <div class="vMedia">
+                <video controls playsinline preload="metadata">
+                  <source src="${escapeHTML(v.src)}" type="video/mp4">
+                </video>
+              </div>
+              <div class="vMeta">
+                <strong>${title}</strong>
+                <div class="muted">${desc}</div>
+              </div>
+            </div>
+          `;
+        }).join("");
+
+        modalContent.innerHTML = `<div class="videosGrid">${cards}</div>`;
+      }
+
+      modal.classList.add('show');
+      modal.setAttribute('aria-hidden','false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal(){
+      modal.classList.remove('show');
+      modal.setAttribute('aria-hidden','true');
+      document.body.style.overflow = '';
+      modalContent.innerHTML = '';
+    }
+
+    document.querySelectorAll('.work[data-cat]').forEach(card => {
+      card.addEventListener('click', () => {
+        openModal(card.dataset.cat);
+      });
+    });
+
+    if(closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+
+    if(modal){
+      modal.addEventListener('click', (e) => {
+        if(e.target === modal) closeModal();
+      });
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if(e.key === 'Escape' && modal.classList.contains('show')){
+        closeModal();
+      }
+    });
+  </script>
+</body>
+</html>
